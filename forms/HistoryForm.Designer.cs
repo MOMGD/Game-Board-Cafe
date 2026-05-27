@@ -1,4 +1,4 @@
-﻿namespace Board_game.forms
+﻿namespace BoardGameCafeApp.Forms
 {
     partial class HistoryForm
     {

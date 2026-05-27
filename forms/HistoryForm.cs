@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Board_game.forms
+namespace BoardGameCafeApp.Forms
 {
     public partial class HistoryForm : Form
     {

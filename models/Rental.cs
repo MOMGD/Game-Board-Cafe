@@ -1,15 +1,25 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Board_game.models
+namespace BoardGameCafeApp.Models
 {
     public class Rental
     {
-        public int RentalID { get; set; }
-        public int GameID { get; set; }
-        public string CustomerName { get; set; }
-        public DateTime RentalDate { get; set; }
-        public string Status { get; set; } // 'Active' or 'Returned'
+        public int RentalId { get; set; }
+
+        [Required]
+        public int GameId { get; set; }
+
+        [Required, MaxLength(120)]
+        public string CustomerName { get; set; } = string.Empty;
+
+        public DateTime RentDate { get; set; } = DateTime.Now;
+
+        public DateTime? ReturnDate { get; set; }
+
+        // Navigation
+        public Game? Game { get; set; }
     }
 }

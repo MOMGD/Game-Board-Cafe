@@ -1,17 +1,42 @@
-namespace Board_game
+using BoardGameCafeApp.Data;
+using BoardGameCafeApp.Forms;
+using BoardGameCafeApp.Services;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace BoardGameCafeApp;
+
+internal static class Program
 {
-    internal static class Program
+    public static IServiceProvider Services { get; private set; } = default!;
+
+    [STAThread]
+    static void Main()
     {
-        /// <summary>
-        ///  The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        static void Main()
-        {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
-            ApplicationConfiguration.Initialize();
-            Application.Run(new AddGameForm());
-        }
+        ApplicationConfiguration.Initialize();
+
+        var configuration = new ConfigurationBuilder()
+            .SetBasePath(AppContext.BaseDirectory)
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .Build();
+
+        var services = new ServiceCollection();
+
+        services.AddSingleton<IConfiguration>(configuration);
+
+        services.AddDbContext<CafeDbContext>(options =>
+            options.UseSqlServer(configuration.GetConnectionString("CafeDb")));
+
+        services.AddScoped<GameService>();
+        services.AddScoped<RentalService>();
+        services.AddScoped<BookingService>();
+
+        Services = services.BuildServiceProvider();
+
+        using var scope = Services.CreateScope();
+        var provider = scope.ServiceProvider;
+
+        Application.Run(new LoginForm(provider));
     }
 }

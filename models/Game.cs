@@ -1,21 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.ComponentModel.DataAnnotations;
 
-namespace Board_game.models
+namespace BoardGameCafeApp.Models
 {
     public class Game
     {
-        public int GameID { get; set; }
-        public string Title { get; set; }
-        public string Genre { get; set; }
-        public int InStock { get; set; }
+        public int GameId { get; set; }
 
-        // Method stub to check availability
-        public bool IsAvailable()
-        {
-            // TODO: Return true if InStock > 0
-            return false;
-        }
+        [Required, MaxLength(120)]
+        public string Title { get; set; } = string.Empty;
+
+        [Required, MaxLength(60)]
+        public string Genre { get; set; } = string.Empty;
+
+        [Range(0, 1000)]
+        public int TotalCopies { get; set; }
+
+        [Range(0, 100000)]
+        public decimal PricePerHour { get; set; }
+
+        // Navigation
+        public List<Rental> Rentals { get; set; } = new();
     }
 }
