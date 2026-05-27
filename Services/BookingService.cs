@@ -49,4 +49,37 @@ public class BookingService
         _db.Bookings.Add(booking);
         _db.SaveChanges();
     }
+
+    public List<CafeTable> GetAllTables()
+    {
+        return _db.CafeTables
+            .AsNoTracking()
+            .OrderBy(t => t.TableName)
+            .ToList();
+    }
+
+    public List<Booking> GetBookingHistory(
+        DateTime? from = null,
+        DateTime? to = null,
+        string? customerSearch = null,
+        int? tableId = null)
+    {
+        IQueryable<Booking> q = _db.Bookings
+            .AsNoTracking()
+            .Include(b => b.CafeTable);
+
+        if (from != null) q = q.Where(b => b.StartTime >= from.Value);
+        if (to != null) q = q.Where(b => b.StartTime <= to.Value);
+
+        if (!string.IsNullOrWhiteSpace(customerSearch))
+        {
+            customerSearch = customerSearch.Trim();
+            q = q.Where(b => b.CustomerName.Contains(customerSearch));
+        }
+
+        if (tableId != null && tableId.Value > 0)
+            q = q.Where(b => b.CafeTableId == tableId.Value);
+
+        return q.OrderByDescending(b => b.StartTime).ToList();
+    }
 }

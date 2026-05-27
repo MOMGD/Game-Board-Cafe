@@ -37,6 +37,10 @@ internal static class Program
         using var scope = Services.CreateScope();
         var provider = scope.ServiceProvider;
 
+        //  Seed database data once at startup (tables + games)
+        var db = provider.GetRequiredService<CafeDbContext>();
+        DbInitializer.Initialize(db);
+
         Application.Run(new LoginForm(provider));
     }
 }
